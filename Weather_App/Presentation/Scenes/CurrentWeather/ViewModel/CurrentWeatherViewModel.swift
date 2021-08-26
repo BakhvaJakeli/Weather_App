@@ -10,8 +10,9 @@ import UIKit
 protocol CurrentWeatherViewModelProtocol: AnyObject {
     init(with viewcontroller: UIViewController)
     
-    func setUpDarkMode(with view: UIView, lightCollor: UIColor, darkCollor: UIColor)
-    func setUpTextDarkMode(with label: UILabel, lightCollor: UIColor, darkCollor: UIColor)
+    func setUpDarkMode(with view: UIView)
+    func setUpTextDarkMode(with label: UILabel, firstColor: UIColor, secondColor: UIColor)
+    func setUpIconDarkMode(with imageView: UIImageView, firstColor: UIColor, secondColor: UIColor)
 }
 
 final class CurrentWeatherViewModel: CurrentWeatherViewModelProtocol {
@@ -22,25 +23,27 @@ final class CurrentWeatherViewModel: CurrentWeatherViewModelProtocol {
         self.controller = viewcontroller
     }
     
-    func setUpDarkMode(with view: UIView, lightCollor: UIColor, darkCollor: UIColor) {
-        switch controller?.traitCollection.userInterfaceStyle {
-        case .dark:
-            view.backgroundColor = darkCollor
-        case .light:
-            view.backgroundColor = lightCollor
-        default:
-            break
+    func setUpDarkMode(with view: UIView) {
+        if #available(iOS 13.0, *) {
+            view.backgroundColor = .systemGray6
+        } else {
+            view.backgroundColor = .white
         }
     }
     
-    func setUpTextDarkMode(with label: UILabel, lightCollor: UIColor, darkCollor: UIColor) {
-        switch controller?.traitCollection.userInterfaceStyle {
-        case .dark:
-            label.textColor = darkCollor
-        case .light:
-            label.textColor = lightCollor
-        default:
-            break
+    func setUpTextDarkMode(with label: UILabel, firstColor: UIColor, secondColor: UIColor) {
+        if #available(iOS 13.0, *) {
+            label.textColor = firstColor
+        } else {
+            label.textColor = secondColor
+        }
+    }
+    
+    func setUpIconDarkMode(with imageView: UIImageView, firstColor: UIColor, secondColor: UIColor) {
+        if #available(iOS 13.0, *) {
+            imageView.tintColor = firstColor
+        } else {
+            imageView.tintColor = secondColor
         }
     }
 }
