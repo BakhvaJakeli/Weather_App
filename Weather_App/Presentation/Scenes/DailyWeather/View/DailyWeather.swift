@@ -11,7 +11,7 @@ class DailyWeather: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Forecast"
-        tabBarItem.image = UIImage(named: "sunny_cloud")
+//        title = "Forecast"
+//        tabBarItem.image = UIImage(named: "sunny_cloud")
     }
 }
