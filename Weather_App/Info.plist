@@ -56,7 +56,9 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>May we use your Location?</string>
+	<string>WeatherApp would like to use your location</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>WeatherApp would like to use your location</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

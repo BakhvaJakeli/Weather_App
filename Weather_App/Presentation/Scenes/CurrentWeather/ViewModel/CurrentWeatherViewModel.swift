@@ -18,10 +18,11 @@ protocol CurrentWeatherViewModelProtocol: AnyObject {
 final class CurrentWeatherViewModel: CurrentWeatherViewModelProtocol {
     
     private weak var controller: UIViewController?
-    
+        
     init(with viewcontroller: UIViewController) {
         self.controller = viewcontroller
     }
+    
     
     func setUpDarkMode(with view: UIView) {
         if #available(iOS 13.0, *) {

@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import CoreLocation
 
 class CurrentWeather: UIViewController {
     
     private var viewModel: CurrentWeatherViewModelProtocol!
+    private var newsManager: CurrentWeatherManagerProtocol!
 
     @IBOutlet weak var bigCircleImg: UIImageView!
     @IBOutlet weak var rainyCloudImg: UIImageView!
@@ -17,6 +19,8 @@ class CurrentWeather: UIViewController {
     @IBOutlet weak var windSpeedImg: UIImageView!
     @IBOutlet weak var windImg: UIImageView!
     @IBOutlet weak var compassImg: UIImageView!
+    
+    let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,10 +31,20 @@ class CurrentWeather: UIViewController {
     }
 }
 
-extension CurrentWeather {
+extension CurrentWeather:CLLocationManagerDelegate {
     
     func configureViewModel() {
         viewModel = CurrentWeatherViewModel(with: self)
+        newsManager = CurrentWeatherManager()
+        locationManager.requestAlwaysAuthorization()
+        locationManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+            
+        }
     }
     
     func setUpImages() {
@@ -48,5 +62,13 @@ extension CurrentWeather {
         vc.tabBarItem.image = UIImage(named: "sunny_cloud")
         title = "Today"
         tabBarItem.image = UIImage(named: "sun")
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let locValue = manager.location else {return}
+        print("ma neme jeff\(locValue.coordinate.latitude)")
+        newsManager.fetchCurrentWeather(lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") { currentWeather in
+            print(currentWeather)
+        }
     }
 }

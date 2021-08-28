@@ -37,13 +37,13 @@ struct Clouds: Codable {
 
 // MARK: - Coord
 struct Coord: Codable {
-    let lon, lat: Int
+    let lon, lat: Double
 }
 
 // MARK: - Main
 struct Main: Codable {
     let temp, feelsLike, tempMin, tempMax: Double
-    let pressure, humidity, seaLevel, grndLevel: Int
+    let pressure, humidity: Int
 
     enum CodingKeys: String, CodingKey {
         case temp
@@ -51,8 +51,6 @@ struct Main: Codable {
         case tempMin = "temp_min"
         case tempMax = "temp_max"
         case pressure, humidity
-        case seaLevel = "sea_level"
-        case grndLevel = "grnd_level"
     }
 }
 
