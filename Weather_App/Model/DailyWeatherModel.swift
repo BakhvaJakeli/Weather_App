@@ -8,7 +8,7 @@
 
 import Foundation
 
-// MARK: - Welcome
+// MARK: - DailyWeatherModel
 struct DailyWeatherModel: Codable {
     let cod: String
     let message, cnt: Int
@@ -16,7 +16,7 @@ struct DailyWeatherModel: Codable {
     let city: DailyCity
 }
 
-// MARK: - City
+// MARK: - DailyCity
 struct DailyCity: Codable {
     let id: Int
     let name: String
@@ -25,12 +25,12 @@ struct DailyCity: Codable {
     let population, timezone, sunrise, sunset: Int
 }
 
-// MARK: - Coord
+// MARK: - DailyCoord
 struct DailyCoord: Codable {
-    let lat, lon: Int
+    let lat, lon: Double
 }
 
-// MARK: - List
+// MARK: - DailyList
 struct DailyList: Codable {
     let dt: Int
     let main: DailyMainClass
@@ -49,12 +49,12 @@ struct DailyList: Codable {
     }
 }
 
-// MARK: - Clouds
+// MARK: - DailyClouds
 struct DailyClouds: Codable {
     let all: Int
 }
 
-// MARK: - MainClass
+// MARK: - DailyMainClass
 struct DailyMainClass: Codable {
     let temp, feelsLike, tempMin, tempMax: Double
     let pressure, seaLevel, grndLevel, humidity: Int
@@ -73,7 +73,7 @@ struct DailyMainClass: Codable {
     }
 }
 
-// MARK: - Rain
+// MARK: - DailyRain
 struct DailyRain: Codable {
     let the3H: Double
 
@@ -82,7 +82,7 @@ struct DailyRain: Codable {
     }
 }
 
-// MARK: - Sys
+// MARK: - DailySys
 struct DailySys: Codable {
     let pod: DailyPod
 }
@@ -92,7 +92,7 @@ enum DailyPod: String, Codable {
     case n = "n"
 }
 
-// MARK: - Weather
+// MARK: - WeatherModel
 struct WeatherModel: Codable {
     let id: Int
     let main: MainEnum
@@ -121,7 +121,7 @@ enum Description: String, Codable {
     case scatteredClouds = "scattered clouds"
 }
 
-// MARK: - Wind
+// MARK: - DailyWind
 struct DailyWind: Codable {
     let speed: Double
     let deg: Int
