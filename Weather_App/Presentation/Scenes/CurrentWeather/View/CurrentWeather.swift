@@ -11,7 +11,7 @@ import CoreLocation
 class CurrentWeather: UIViewController {
     
     private var viewModel: CurrentWeatherViewModelProtocol!
-    private var newsManager: CurrentWeatherManagerProtocol!
+    private var currentWeatherManager: CurrentWeatherManagerProtocol!
 
     @IBOutlet private weak var currentLocation: UILabel!
     @IBOutlet private weak var currentWeather: UILabel!
@@ -29,11 +29,11 @@ class CurrentWeather: UIViewController {
     @IBOutlet private weak var windImg: UIImageView!
     @IBOutlet private weak var compassImg: UIImageView!
     
-    @IBOutlet weak var shareBtn: UIButton!
+    @IBOutlet private weak var shareBtn: UIButton!
     
     
-    @IBOutlet weak var leadingSecondConstraint: NSLayoutConstraint!
-    @IBOutlet weak var differenceBetweenStackView: NSLayoutConstraint!
+    @IBOutlet private weak var leadingSecondConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var differenceBetweenStackView: NSLayoutConstraint!
     let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
@@ -78,7 +78,7 @@ extension CurrentWeather:CLLocationManagerDelegate {
     
     func configureViewModel() {
         viewModel = CurrentWeatherViewModel(with: self)
-        newsManager = CurrentWeatherManager()
+        currentWeatherManager = CurrentWeatherManager()
         locationManager.requestAlwaysAuthorization()
         locationManager.requestWhenInUseAuthorization()
         
@@ -109,7 +109,7 @@ extension CurrentWeather:CLLocationManagerDelegate {
         UIView.animate(withDuration: 3) { [unowned self] in
             self.shareBtn.isHidden = false
         }
-        newsManager.fetchCurrentWeather(lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") { [weak self] currentWeather in
+        currentWeatherManager.fetchCurrentWeather(lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") { [weak self] currentWeather in
             DispatchQueue.main.async {
                 guard let strongself = self else {return}
                 strongself.viewModel.manageUI(with: currentWeather, mainPhoto: strongself.bigCircleImg , currentLocation: strongself.currentLocation, currentTemp: strongself.currentWeather, humidityLabel: strongself.humidityPercent, preasureLabel: strongself.PreasureLabel, windSpeedLabel: strongself.windSpeedLabel, windDirecction: strongself.windDirection)
