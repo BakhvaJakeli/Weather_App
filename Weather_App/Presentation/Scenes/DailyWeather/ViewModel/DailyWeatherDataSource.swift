@@ -13,6 +13,10 @@ class DailyWeatherDataSource: NSObject, UITableViewDelegate, UITableViewDataSour
     
     private var tableView: UITableView!
     private var dailyWeatherData: DailyWeatherModel?
+    private var dailyDataArray = [DailyWeatherModel]()
+    var myDictionary: [String: [DailyList]] = [:]
+    var dictionaryKeys = [String]()
+    
     
     init(with tableView: UITableView, dailyWeatherData: DailyWeatherModel) {
         super.init()
@@ -22,9 +26,29 @@ class DailyWeatherDataSource: NSObject, UITableViewDelegate, UITableViewDataSour
         self.tableView.delegate = self
         
         self.dailyWeatherData = dailyWeatherData
-        
     }
     
+    
+    func createArrayForSections(start: Int = 0) {
+        guard let list = dailyWeatherData?.list else { return }
+        let i = start
+        let og = list[i].dtTxt.prefix(10)
+        dictionaryKeys.append(String(og))
+        guard start != list.count else { return }
+        for index in i ..< list.count {
+            if list[index].dtTxt.prefix(10) == og {
+                var array = myDictionary[(String(og))] ?? []
+                array.append(list[index])
+                myDictionary[String(og)] = array
+            } else {
+                createArrayForSections(start: index)
+                break
+            }
+        }
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
     
     func setUpcurrentdate() -> (String, String, String) { //Year - 0, Month - 1, Day - 2 //[String] {
         let currentDateTime = Date()
@@ -89,38 +113,61 @@ class DailyWeatherDataSource: NSObject, UITableViewDelegate, UITableViewDataSour
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return myDictionary.keys.count//5
         
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        guard let dailyWeatherData = dailyWeatherData else {return 0}
-
-        if section == 0 {
-
-            let currentDate = setUpcurrentdate()
-            let rowInSection = dailyWeatherData.list.filter{ $0.dtTxt.contains("\(currentDate.0)-\(currentDate.1)-\(currentDate.2)") }.count
-            if rowInSection <= 0 {
-                return 1
-            } else {
-                return rowInSection
-            }
-        }
-        return 8
+        guard let dailyWeatherData = dailyWeatherData else { return 0 }
+        let key = String(dailyWeatherData.list[section].dtTxt.prefix(10))
+        return myDictionary[key]?.count ?? 0
+//        if section == 0 {
+//
+//            let currentDate = setUpcurrentdate()
+//            let rowInSection = dailyWeatherData.list.filter{ $0.dtTxt.contains("\(currentDate.0)-\(currentDate.1)-\(currentDate.2)") }.count
+//            if rowInSection <= 0 {
+//                return 1
+//            } else {
+//                return rowInSection
+//            }
+//        }
+//        return 8
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-//        guard let dailyWeatherData = dailyWeatherData else {return UITableViewCell()}
+//        guard let dailyWeatherData = dailyWeatherData else { return UITableViewCell() }
         
         let cell = tableView.deque(DailyWeatherTableViewCell.self, for: indexPath) as DailyWeatherTableViewCell
-//        guard let url = URL(string: "https://openweathermap.org/img/wn/\(dailyWeatherData.list[indexPath.row].weather[indexPath.row].icon)@2x.png") else {return UITableViewCell()}
-//        cell.theImg.kf.setImage(with: url)
-//        cell.descriptionLbl.text = dailyWeatherData.list[indexPath.section].weather[indexPath.row].weatherDescription.rawValue
-//        let dt12 = Date.init(timeIntervalSince1970: TimeInterval(dailyWeatherData.list[indexPath.section].dt))
-//        let tm = Calendar.current.component(.hour, from: dt12)
-//        cell.timeLabel.text = "\(tm)"
+//        let hdr = tableView.header
+        let list = myDictionary[dictionaryKeys[indexPath.section]]//?[indexPath.row]
+        guard list?[indexPath.row] != nil else {
+            return UITableViewCell()
+            
+        }
+        
+        let dly = list?[indexPath.row]
+        
+        guard let url = URL(string: "https://openweathermap.org/img/wn/\(dly?.weather.first?.icon ?? "")@2x.png") else {
+            return UITableViewCell()
+            
+        }
+        
+        cell.theImg.kf.setImage(with: url)
+        cell.descriptionLbl.text = dly?.weather.first?.weatherDescription.rawValue
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+//        let dt12 = Date.init(timeIntervalSince1970: TimeInterval(dly?.dt ?? 0))
+//        let hr = Calendar.current.component(.hour, from: dt12)
+//        let mm = Calendar.current.component(.minute, from: dt12)
+        let newDate = formatter.date(from: dly?.dtTxt ?? "")
+        let hr = Calendar.current.component(.hour, from: newDate!)
+        let mm = Calendar.current.component(.minute, from: newDate!)
+        cell.timeLabel.text = "\(hr):\(mm)"
+        cell.tempLabel.text = "\((dly?.main.temp ?? 0) - 273.15)°"
         return cell
         
     }
@@ -143,6 +190,10 @@ class DailyWeatherDataSource: NSObject, UITableViewDelegate, UITableViewDataSour
         tableView.deselectRow(at: indexPath, animated: true)
         print(indexPath)
         
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 110
     }
     
 

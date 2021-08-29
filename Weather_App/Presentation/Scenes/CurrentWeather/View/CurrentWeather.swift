@@ -30,10 +30,11 @@ class CurrentWeather: UIViewController {
     @IBOutlet private weak var compassImg: UIImageView!
     
     @IBOutlet private weak var shareBtn: UIButton!
+   
+    @IBOutlet weak var firstHidden: UIStackView!
+    @IBOutlet weak var secondHidden: UIStackView!
+    @IBOutlet weak var secondStackView: UIStackView!
     
-    
-    @IBOutlet private weak var leadingSecondConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var differenceBetweenStackView: NSLayoutConstraint!
     let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
@@ -60,11 +61,13 @@ class CurrentWeather: UIViewController {
     
     private func handleOrientationChange() {
         if UIDevice.current.orientation.isLandscape {
-            leadingSecondConstraint.priority = .defaultLow
-            differenceBetweenStackView.priority = .required
+            secondStackView.isHidden = true
+            firstHidden.isHidden = false
+            secondHidden.isHidden = false
         } else {
-            leadingSecondConstraint.priority = .required
-            differenceBetweenStackView.priority = .defaultLow
+            secondStackView.isHidden = false
+            firstHidden.isHidden = true
+            secondHidden.isHidden = true
         }
         updateViewConstraints()
     }

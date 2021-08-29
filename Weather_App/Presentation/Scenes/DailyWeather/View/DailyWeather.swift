@@ -31,6 +31,8 @@ class DailyWeather: UIViewController {
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
         }
+//        dataSource.createArrayForSections()
+//        dispatchqu
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -47,9 +49,10 @@ extension DailyWeather: CLLocationManagerDelegate {
         guard let locValue = manager.location else {return}
         dailyWeatherManager.fetchDailyWeather(lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") {[weak self] dailyWeather in
             self?.dailyWeatherData = dailyWeather
-            guard let dailyWeatherData = self?.dailyWeatherData else {return}
+            guard let dailyWeatherData = self?.dailyWeatherData else { return }
             DispatchQueue.main.async { [weak self] in
                 self?.dataSource = DailyWeatherDataSource(with:(self?.myTable)!, dailyWeatherData: dailyWeatherData)
+                self?.dataSource.createArrayForSections()
                 self?.myTable.reloadData()
             }
         }
