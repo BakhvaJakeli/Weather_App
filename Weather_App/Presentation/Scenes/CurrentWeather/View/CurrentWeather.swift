@@ -13,22 +13,65 @@ class CurrentWeather: UIViewController {
     private var viewModel: CurrentWeatherViewModelProtocol!
     private var newsManager: CurrentWeatherManagerProtocol!
 
-    @IBOutlet weak var bigCircleImg: UIImageView!
-    @IBOutlet weak var rainyCloudImg: UIImageView!
-    @IBOutlet weak var dropletImg: UIImageView!
-    @IBOutlet weak var windSpeedImg: UIImageView!
-    @IBOutlet weak var windImg: UIImageView!
-    @IBOutlet weak var compassImg: UIImageView!
+    @IBOutlet private weak var currentLocation: UILabel!
+    @IBOutlet private weak var currentWeather: UILabel!
+    @IBOutlet private weak var humidityPercent: UILabel!
+    @IBOutlet private weak var rainFall: UILabel!
+    @IBOutlet private weak var PreasureLabel: UILabel!
+    @IBOutlet private weak var windSpeedLabel: UILabel!
+    @IBOutlet private weak var windDirection: UILabel!
+
+
+    @IBOutlet private weak var bigCircleImg: UIImageView!
+    @IBOutlet private weak var rainyCloudImg: UIImageView!
+    @IBOutlet private weak var dropletImg: UIImageView!
+    @IBOutlet private weak var PreasureImg: UIImageView!
+    @IBOutlet private weak var windImg: UIImageView!
+    @IBOutlet private weak var compassImg: UIImageView!
     
+    @IBOutlet weak var shareBtn: UIButton!
+    
+    
+    @IBOutlet weak var leadingSecondConstraint: NSLayoutConstraint!
+    @IBOutlet weak var differenceBetweenStackView: NSLayoutConstraint!
     let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        shareBtn.isHidden = true
         configureViewModel()
         viewModel.setUpDarkMode(with: self.view)
         setUpImages()
         setUpVc()
+        NotificationCenter.default.addObserver(self, selector: #selector(orientationDidChange(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        handleOrientationChange()
+//    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        handleOrientationChange()
+    }
+    @objc private func orientationDidChange( _ sender: Any) {
+       handleOrientationChange()
+    }
+    
+    private func handleOrientationChange() {
+        if UIDevice.current.orientation.isLandscape {
+            leadingSecondConstraint.priority = .defaultLow
+            differenceBetweenStackView.priority = .required
+        } else {
+            leadingSecondConstraint.priority = .required
+            differenceBetweenStackView.priority = .defaultLow
+        }
+        updateViewConstraints()
+    }
+    
+    @IBAction func onShare(_ sender: Any) {
+    }
+    
 }
 
 extension CurrentWeather:CLLocationManagerDelegate {
@@ -43,30 +86,35 @@ extension CurrentWeather:CLLocationManagerDelegate {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
-            
         }
     }
     
     func setUpImages() {
-        viewModel.setUpIconDarkMode(with: bigCircleImg, firstColor: .systemOrange, secondColor: .orange)
         viewModel.setUpIconDarkMode(with: rainyCloudImg, firstColor: .systemYellow, secondColor: .yellow)
         viewModel.setUpIconDarkMode(with: dropletImg, firstColor: .systemYellow, secondColor: .yellow)
-        viewModel.setUpIconDarkMode(with: windSpeedImg, firstColor: .systemYellow, secondColor: .yellow)
+        viewModel.setUpIconDarkMode(with: PreasureImg, firstColor: .systemYellow, secondColor: .yellow)
         viewModel.setUpIconDarkMode(with: windImg, firstColor: .systemYellow, secondColor: .yellow)
     }
     
     func setUpVc() {
         let sb = UIStoryboard(name: "DailyWeather", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "DailyWeather")
+        vc.title = "Forecast"
+        vc.tabBarItem.image = UIImage(named: "sunny_cloud")
         title = "Today"
         tabBarItem.image = UIImage(named: "sun")
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let locValue = manager.location else {return}
-        print("ma neme jeff\(locValue.coordinate.latitude)")
-        newsManager.fetchCurrentWeather(lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") { currentWeather in
-            print(currentWeather)
+        UIView.animate(withDuration: 3) { [unowned self] in
+            self.shareBtn.isHidden = false
+        }
+        newsManager.fetchCurrentWeather(lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") { [weak self] currentWeather in
+            DispatchQueue.main.async {
+                guard let strongself = self else {return}
+                strongself.viewModel.manageUI(with: currentWeather, mainPhoto: strongself.bigCircleImg , currentLocation: strongself.currentLocation, currentTemp: strongself.currentWeather, humidityLabel: strongself.humidityPercent, preasureLabel: strongself.PreasureLabel, windSpeedLabel: strongself.windSpeedLabel, windDirecction: strongself.windDirection)
+            }
         }
     }
 }
