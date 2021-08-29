@@ -97,12 +97,11 @@ extension CurrentWeather:CLLocationManagerDelegate {
     }
     
     func setUpVc() {
-        let sb = UIStoryboard(name: "DailyWeather", bundle: nil)
-        let vc = sb.instantiateViewController(withIdentifier: "DailyWeather")
-        vc.title = "Forecast"
-        vc.tabBarItem.image = UIImage(named: "sunny_cloud")
-        title = "Today"
-        tabBarItem.image = UIImage(named: "sun")
+        guard let tabBaritems = tabBarController?.tabBar.items else {return}
+        tabBaritems[0].title = "Today"
+        tabBaritems[0].image = UIImage(named: "sun")
+        tabBaritems[1].title = "Forecast"
+        tabBaritems[1].image = UIImage(named: "sunny_cloud")
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
