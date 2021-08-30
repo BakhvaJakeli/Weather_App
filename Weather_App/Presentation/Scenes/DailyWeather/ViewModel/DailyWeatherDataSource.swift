@@ -30,16 +30,18 @@ class DailyWeatherDataSource: NSObject, UITableViewDelegate, UITableViewDataSour
     
     
     func createArrayForSections(start: Int = 0) {
+        
         guard let list = dailyWeatherData?.list else { return }
-        let i = start
-        let og = list[i].dtTxt.prefix(10)
-        dictionaryKeys.append(String(og))
+        
+        let startNumber = start
+        let dateString = list[startNumber].dtTxt.prefix(10)
+        dictionaryKeys.append(String(dateString))
         guard start != list.count else { return }
-        for index in i ..< list.count {
-            if list[index].dtTxt.prefix(10) == og {
-                var array = myDictionary[(String(og))] ?? []
+        for index in startNumber ..< list.count {
+            if list[index].dtTxt.prefix(10) == dateString {
+                var array = myDictionary[(String(dateString))] ?? []
                 array.append(list[index])
-                myDictionary[String(og)] = array
+                myDictionary[String(dateString)] = array
             } else {
                 createArrayForSections(start: index)
                 break
@@ -137,37 +139,32 @@ class DailyWeatherDataSource: NSObject, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-//        guard let dailyWeatherData = dailyWeatherData else { return UITableViewCell() }
         
         let cell = tableView.deque(DailyWeatherTableViewCell.self, for: indexPath) as DailyWeatherTableViewCell
-//        let hdr = tableView.header
         let list = myDictionary[dictionaryKeys[indexPath.section]]//?[indexPath.row]
         guard list?[indexPath.row] != nil else {
             return UITableViewCell()
             
         }
         
-        let dly = list?[indexPath.row]
+        let finalList = list?[indexPath.row]
         
-        guard let url = URL(string: "https://openweathermap.org/img/wn/\(dly?.weather.first?.icon ?? "")@2x.png") else {
+        guard let url = URL(string: "https://openweathermap.org/img/wn/\(finalList?.weather.first?.icon ?? "")@2x.png") else {
             return UITableViewCell()
             
         }
         
         cell.theImg.kf.setImage(with: url)
-        cell.descriptionLbl.text = dly?.weather.first?.weatherDescription.rawValue
+        cell.descriptionLbl.text = finalList?.weather.first?.weatherDescription.rawValue
         
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-//        let dt12 = Date.init(timeIntervalSince1970: TimeInterval(dly?.dt ?? 0))
-//        let hr = Calendar.current.component(.hour, from: dt12)
-//        let mm = Calendar.current.component(.minute, from: dt12)
-        let newDate = formatter.date(from: dly?.dtTxt ?? "")
+        let newDate = formatter.date(from: finalList?.dtTxt ?? "")
         let hr = Calendar.current.component(.hour, from: newDate!)
         let mm = Calendar.current.component(.minute, from: newDate!)
         cell.timeLabel.text = "\(hr):\(mm)"
-        cell.tempLabel.text = "\((dly?.main.temp ?? 0) - 273.15)°"
+        cell.tempLabel.text = "\(Int((finalList?.main.temp ?? 0) - 273.15))°"
         return cell
         
     }

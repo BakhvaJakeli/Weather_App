@@ -16,13 +16,16 @@ class DailyWeather: UIViewController {
     private var dailyWeatherData: DailyWeatherModel?
     
     let locationManager = CLLocationManager()
-
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
+    
     
     @IBOutlet weak var myTable: UITableView!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        myTable.isHidden = true
+        spinner.startAnimating()
         configureVc()
         myTable.registerNib(class: DailyWeatherTableViewCell.self)
         
@@ -54,6 +57,9 @@ extension DailyWeather: CLLocationManagerDelegate {
                 self?.dataSource = DailyWeatherDataSource(with:(self?.myTable)!, dailyWeatherData: dailyWeatherData)
                 self?.dataSource.createArrayForSections()
                 self?.myTable.reloadData()
+                self?.spinner.stopAnimating()
+                self?.spinner.isHidden = true
+                self?.myTable.isHidden = false
             }
         }
     }

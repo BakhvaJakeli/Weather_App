@@ -21,8 +21,7 @@
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WVN-aF-4Ot">
                         <rect key="frame" x="10" y="10" width="90" height="90"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="90" id="KgF-FM-EOg"/>
-                            <constraint firstAttribute="width" constant="90" id="cP6-tJ-WHh"/>
+                            <constraint firstAttribute="width" secondItem="WVN-aF-4Ot" secondAttribute="height" multiplier="1:1" id="88w-L6-80u"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kvA-QF-vkr">
@@ -47,12 +46,14 @@
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
+                <color key="backgroundColor" systemColor="systemGray6Color"/>
                 <constraints>
                     <constraint firstItem="wX4-YW-7b6" firstAttribute="leading" secondItem="WVN-aF-4Ot" secondAttribute="trailing" constant="30" id="L3U-Iz-BT4"/>
                     <constraint firstAttribute="bottom" secondItem="kvA-QF-vkr" secondAttribute="bottom" constant="10" id="L4X-Id-Ydg"/>
                     <constraint firstAttribute="bottom" secondItem="wX4-YW-7b6" secondAttribute="bottom" constant="30" id="VNY-R6-7BS"/>
                     <constraint firstItem="yQC-Rj-7a6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="30" id="W4O-oa-Yil"/>
                     <constraint firstItem="WVN-aF-4Ot" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="WS9-2u-oW7"/>
+                    <constraint firstItem="WVN-aF-4Ot" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.775862" id="enu-qJ-Qgd"/>
                     <constraint firstAttribute="trailing" secondItem="kvA-QF-vkr" secondAttribute="trailing" constant="10" id="pxe-En-p8C"/>
                     <constraint firstItem="WVN-aF-4Ot" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="q7q-kA-Acd"/>
                     <constraint firstItem="kvA-QF-vkr" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="wvo-YN-4ht"/>
@@ -72,6 +73,9 @@
     <resources>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGray6Color">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
