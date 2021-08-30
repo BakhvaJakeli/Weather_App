@@ -121,30 +121,19 @@ class DailyWeatherDataSource: NSObject, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        guard let dailyWeatherData = dailyWeatherData else { return 0 }
-        let key = String(dailyWeatherData.list[section].dtTxt.prefix(10))
+        let key = dictionaryKeys[section]
+        
         return myDictionary[key]?.count ?? 0
-//        if section == 0 {
-//
-//            let currentDate = setUpcurrentdate()
-//            let rowInSection = dailyWeatherData.list.filter{ $0.dtTxt.contains("\(currentDate.0)-\(currentDate.1)-\(currentDate.2)") }.count
-//            if rowInSection <= 0 {
-//                return 1
-//            } else {
-//                return rowInSection
-//            }
-//        }
-//        return 8
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        
         let cell = tableView.deque(DailyWeatherTableViewCell.self, for: indexPath) as DailyWeatherTableViewCell
         let list = myDictionary[dictionaryKeys[indexPath.section]]//?[indexPath.row]
-        guard list?[indexPath.row] != nil else {
+        
+        guard indexPath.row < list?.count ?? 0 else {
             return UITableViewCell()
-            
         }
         
         let finalList = list?[indexPath.row]
@@ -193,6 +182,6 @@ class DailyWeatherDataSource: NSObject, UITableViewDelegate, UITableViewDataSour
         return 110
     }
     
-
+    
 }
 

@@ -12,7 +12,8 @@ class CurrentWeather: UIViewController {
     
     private var viewModel: CurrentWeatherViewModelProtocol!
     private var currentWeatherManager: CurrentWeatherManagerProtocol!
-
+    private var shareString: String?
+    
     @IBOutlet private weak var currentLocation: UILabel!
     @IBOutlet private weak var currentWeather: UILabel!
     @IBOutlet private weak var humidityPercent: UILabel!
@@ -20,8 +21,8 @@ class CurrentWeather: UIViewController {
     @IBOutlet private weak var PreasureLabel: UILabel!
     @IBOutlet private weak var windSpeedLabel: UILabel!
     @IBOutlet private weak var windDirection: UILabel!
-
-
+    
+    
     @IBOutlet private weak var bigCircleImg: UIImageView!
     @IBOutlet private weak var rainyCloudImg: UIImageView!
     @IBOutlet private weak var dropletImg: UIImageView!
@@ -30,7 +31,7 @@ class CurrentWeather: UIViewController {
     @IBOutlet private weak var compassImg: UIImageView!
     
     @IBOutlet private weak var shareBtn: UIButton!
-   
+    
     @IBOutlet weak var firstHidden: UIStackView!
     @IBOutlet weak var secondHidden: UIStackView!
     @IBOutlet weak var secondStackView: UIStackView!
@@ -44,19 +45,19 @@ class CurrentWeather: UIViewController {
         viewModel.setUpDarkMode(with: self.view)
         setUpImages()
         setUpVc()
-        NotificationCenter.default.addObserver(self, selector: #selector(orientationDidChange(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(orientationDidChange(_:)),
+                                               name: UIDevice.orientationDidChangeNotification,
+                                               object: nil)
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        handleOrientationChange()
-//    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         handleOrientationChange()
     }
     @objc private func orientationDidChange( _ sender: Any) {
-       handleOrientationChange()
+        handleOrientationChange()
     }
     
     private func handleOrientationChange() {
@@ -73,11 +74,22 @@ class CurrentWeather: UIViewController {
     }
     
     @IBAction func onShare(_ sender: Any) {
+        guard let text = shareString else {return}
+        let item = [text]
+        let ac = UIActivityViewController(activityItems: item, applicationActivities: nil)
+        present(ac, animated: true, completion: nil)
     }
     
 }
 
 extension CurrentWeather:CLLocationManagerDelegate {
+    
+    func getShreText(temp:Int,
+                     description: String,
+                     location: String,
+                     country: String) -> String {
+        return "\(temp)° | \(description), \(location), \(country) by WeatherApp"
+    }
     
     func configureViewModel() {
         viewModel = CurrentWeatherViewModel(with: self)
@@ -93,10 +105,18 @@ extension CurrentWeather:CLLocationManagerDelegate {
     }
     
     func setUpImages() {
-        viewModel.setUpIconDarkMode(with: rainyCloudImg, firstColor: .systemYellow, secondColor: .yellow)
-        viewModel.setUpIconDarkMode(with: dropletImg, firstColor: .systemYellow, secondColor: .yellow)
-        viewModel.setUpIconDarkMode(with: PreasureImg, firstColor: .systemYellow, secondColor: .yellow)
-        viewModel.setUpIconDarkMode(with: windImg, firstColor: .systemYellow, secondColor: .yellow)
+        viewModel.setUpIconDarkMode(with: rainyCloudImg,
+                                    firstColor: .systemYellow,
+                                    secondColor: .yellow)
+        viewModel.setUpIconDarkMode(with: dropletImg,
+                                    firstColor: .systemYellow,
+                                    secondColor: .yellow)
+        viewModel.setUpIconDarkMode(with: PreasureImg,
+                                    firstColor: .systemYellow,
+                                    secondColor: .yellow)
+        viewModel.setUpIconDarkMode(with: windImg,
+                                    firstColor: .systemYellow,
+                                    secondColor: .yellow)
     }
     
     func setUpVc() {
@@ -112,10 +132,21 @@ extension CurrentWeather:CLLocationManagerDelegate {
         UIView.animate(withDuration: 3) { [unowned self] in
             self.shareBtn.isHidden = false
         }
-        currentWeatherManager.fetchCurrentWeather(lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") { [weak self] currentWeather in
+        currentWeatherManager.fetchCurrentWeather(controller:self, lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") { [weak self] currentWeather in
             DispatchQueue.main.async {
                 guard let strongself = self else {return}
-                strongself.viewModel.manageUI(with: currentWeather, mainPhoto: strongself.bigCircleImg , currentLocation: strongself.currentLocation, currentTemp: strongself.currentWeather, humidityLabel: strongself.humidityPercent, preasureLabel: strongself.PreasureLabel, windSpeedLabel: strongself.windSpeedLabel, windDirecction: strongself.windDirection)
+                strongself.viewModel.manageUI(with: currentWeather,
+                                              mainPhoto: strongself.bigCircleImg ,
+                                              currentLocation: strongself.currentLocation,
+                                              currentTemp: strongself.currentWeather,
+                                              humidityLabel: strongself.humidityPercent,
+                                              preasureLabel: strongself.PreasureLabel,
+                                              windSpeedLabel: strongself.windSpeedLabel,
+                                              windDirecction: strongself.windDirection)
+                strongself.shareString = strongself.getShreText(temp: Int((currentWeather.main.temp ) - 273.15),
+                                                                description: currentWeather.weather.first?.weatherDescription ?? "",
+                                                                location: currentWeather.name,
+                                                                country: currentWeather.sys.country)
             }
         }
     }

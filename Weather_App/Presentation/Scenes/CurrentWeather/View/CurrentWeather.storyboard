@@ -17,8 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="5Kr-W0-MPs">
-                                <rect key="frame" x="162.5" y="74.5" width="89.5" height="88.5"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5Kr-W0-MPs">
+                                <rect key="frame" x="162.5" y="74" width="89.5" height="89.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="5Kr-W0-MPs" secondAttribute="height" multiplier="1:1" id="Mmm-kf-4Ma"/>
                                 </constraints>
@@ -38,7 +38,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k0u-op-1yz">
                                 <rect key="frame" x="40" y="671" width="334" height="45"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="23"/>
-                                <state key="normal" title="Share"/>
+                                <state key="normal" title="Share">
+                                    <color key="titleColor" systemColor="systemYellowColor"/>
+                                </state>
                                 <connections>
                                     <action selector="onShare:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Yh0-aT-BaH"/>
                                 </connections>
@@ -209,7 +211,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="circle.fill" catalog="system" width="128" height="121"/>
         <image name="cloud.rain.fill" catalog="system" width="128" height="125"/>
         <image name="compass2" width="25" height="25"/>
         <image name="drop.fill" catalog="system" width="101" height="128"/>
@@ -223,6 +224,9 @@
         </systemColor>
         <systemColor name="systemRedColor">
             <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemYellowColor">
+            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -33,8 +33,10 @@ final class CurrentWeatherViewModel: CurrentWeatherViewModelProtocol {
             view.backgroundColor = .white
         }
     }
-    
-    func setUpTextDarkMode(with label: UILabel, firstColor: UIColor, secondColor: UIColor) {
+        
+    func setUpTextDarkMode(with label: UILabel,
+                           firstColor: UIColor,
+                           secondColor: UIColor) {
         if #available(iOS 13.0, *) {
             label.textColor = firstColor
         } else {
@@ -42,7 +44,9 @@ final class CurrentWeatherViewModel: CurrentWeatherViewModelProtocol {
         }
     }
     
-    func setUpIconDarkMode(with imageView: UIImageView, firstColor: UIColor, secondColor: UIColor) {
+    func setUpIconDarkMode(with imageView: UIImageView,
+                           firstColor: UIColor,
+                           secondColor: UIColor) {
         if #available(iOS 13.0, *) {
             imageView.tintColor = firstColor
         } else {
@@ -50,7 +54,14 @@ final class CurrentWeatherViewModel: CurrentWeatherViewModelProtocol {
         }
     }
     
-    func manageUI(with weather: CurrentWeatherModel, mainPhoto: UIImageView, currentLocation: UILabel, currentTemp: UILabel, humidityLabel: UILabel, preasureLabel: UILabel, windSpeedLabel: UILabel, windDirecction: UILabel) {
+    func manageUI(with weather: CurrentWeatherModel,
+                  mainPhoto: UIImageView,
+                  currentLocation: UILabel,
+                  currentTemp: UILabel,
+                  humidityLabel: UILabel,
+                  preasureLabel: UILabel,
+                  windSpeedLabel: UILabel,
+                  windDirecction: UILabel) {
         let url = URL(string: "https://openweathermap.org/img/wn/\(weather.weather[0].icon)@2x.png")
         
         mainPhoto.kf.setImage(with: url)

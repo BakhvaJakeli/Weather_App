@@ -24,6 +24,7 @@ class DailyWeather: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        spinner.isHidden = false
         myTable.isHidden = true
         spinner.startAnimating()
         configureVc()
@@ -34,8 +35,7 @@ class DailyWeather: UIViewController {
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
         }
-//        dataSource.createArrayForSections()
-//        dispatchqu
+
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -50,7 +50,7 @@ extension DailyWeather: CLLocationManagerDelegate {
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let locValue = manager.location else {return}
-        dailyWeatherManager.fetchDailyWeather(lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") {[weak self] dailyWeather in
+        dailyWeatherManager.fetchDailyWeather(controller:self,lat: "\(locValue.coordinate.latitude)", long: "\(locValue.coordinate.longitude)") {[weak self] dailyWeather in
             self?.dailyWeatherData = dailyWeather
             guard let dailyWeatherData = self?.dailyWeatherData else { return }
             DispatchQueue.main.async { [weak self] in
